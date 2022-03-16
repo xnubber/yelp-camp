@@ -37,12 +37,12 @@
           <label class="form-label" for="price">Campground Price</label>
           <div class="input-group">
             <span class="input-group-text" id="price-label">$</span>
-            <input class="form-control" type="number" name="campground[price]" id="price" placeholder="0.0" value="<%= campground.price%>" required>
+            <input class="form-control" type="number" name="campground[price]" id="price" placeholder="0.0" min="0" value="<%= campground.price%>" required>
             <div class="valid-feedback">
               Looks good!
             </div>
             <div class="invalid-feedback">
-              Please set a campground price.
+              Please set a campground price and the price cannot be negative.
             </div>
           </div>
         </div>

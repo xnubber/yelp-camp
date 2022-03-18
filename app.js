@@ -78,10 +78,10 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
 
 
 // add a review
-app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res, next) => {
   const campgroundId = req.params.id
   const campground = await Campground.findById(campgroundId)
-  if(!campground) throw new ExpressError("Campground doesn't exist", 400)
+  if (!campground) throw new ExpressError("Campground doesn't exist", 400)
 
   const review = new Review(req.body.review)
   campground.reviews.push(review)
@@ -89,6 +89,14 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res)
   await review.save()
   await campground.save()
   res.redirect(`/campgrounds/${campgroundId}`)
+}))
+
+// delete a review 
+app.delete('/campgrounds/:campId/reviews/:reviewId', catchAsync(async (req, res, next) => {
+  const {campId, reviewId} = req.params
+  await Campground.findByIdAndUpdate(campId, {$pull: {reviews: reviewId}})
+  await Review.findByIdAndDelete(reviewId)
+  res.redirect(`/campgrounds/${campId}`)
 }))
 
 app.all('*', (req, res, next) => {

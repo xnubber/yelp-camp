@@ -10,6 +10,7 @@ const port = 3000
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
 const validateCampground = require('./middleware/validateCampground')
+const validateReview = require('./middleware/validateReview')
 
 
 
@@ -77,9 +78,11 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
 
 
 // add a review
-app.post('/campgrounds/:id/reviews', catchAsync(async (req, res) => { 
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
   const campgroundId = req.params.id
   const campground = await Campground.findById(campgroundId)
+  if(!campground) throw new ExpressError("Campground doesn't exist", 400)
+
   const review = new Review(req.body.review)
   campground.reviews.push(review)
   review.campground = campground

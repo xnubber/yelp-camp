@@ -6,10 +6,12 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const port = 3000
 
-
+const passport = require('./config/passport')
 const ExpressError = require('./utils/ExpressError')
-const routes = require('./routes')
+const campgroundRoutes = require('./routes/campground')
+const userRoutes = require('./routes/user')
 const errorHandler = require('./middleware/errorHandler')
+const { authenticator} = require('./middleware/auth')
 
 // mongoose
 require('./config/mongoose')
@@ -32,8 +34,12 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(flash())
 app.use((req,res,next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
   res.locals.success = req.flash('success')
   res.locals.error = req.flash('error')
   next()
@@ -43,7 +49,8 @@ app.use((req,res,next) => {
 app.get('/', (req, res) => {
   res.render('home')
 })
-app.use('/campgrounds', routes)
+app.use('/users', userRoutes)
+app.use('/campgrounds', authenticator, campgroundRoutes)
 app.all('*', (req, res, next) => {
   next(new ExpressError('Page Not Found', 404))
 })

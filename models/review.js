@@ -7,6 +7,10 @@ const reviewSchema = new Schema({
   campground: {
     type: Schema.Types.ObjectId,
     ref: 'Campground'
+  },
+  createdAt: {
+    type: Date,
+    default: new Date()
   }
 })
 

@@ -7,32 +7,35 @@ const userController = {
   signupPage: (req, res) => {
     res.render('users/signup')
   },
-  signup: catchAsync(async (req, res) => {
-    const { username, email, password, confirmPassword } = req.body
-    const checkUser = await User.findOne({username})
-    if(checkUser) {
+  signup: catchAsync(async (req, res, next) => {
+    const { name, email, password, confirmPassword } = req.body
+    const checkUser = await User.findOne({ username: name })
+    if (checkUser) {
       req.flash('error', 'User already exists.')
-      return res.render('users/signup', { username, email, password, confirmPassword })
+      return res.render('users/signup', { name, email, password, confirmPassword })
     }
-    const checkEmail = await User.findOne({email})
-    if(checkEmail) {
+    const checkEmail = await User.findOne({ email })
+    if (checkEmail) {
       req.flash('error', 'User already exists.')
-      return res.render('users/signup', { username, email, password, confirmPassword })
+      return res.render('users/signup', { name, email, password, confirmPassword })
     }
-    if(password !== confirmPassword) {
+    if (password !== confirmPassword) {
       req.flash('error', 'Password and confirm password must be the same.')
-      return res.render('users/signup', { username, email, password, confirmPassword })
+      return res.render('users/signup', { name, email, password, confirmPassword })
     }
 
     const hash = await bcrypt.hash(password, 10)
     const user = new User({
-      username,
+      username: name,
       email,
       password: hash,
     })
     await user.save()
-    req.flash('success', 'Successfully sign up')
-    res.redirect('/users/signin')
+    req.login(user, err => {
+      if (err) return next(err)
+      req.flash('success', 'Successfully sign up')
+      res.redirect('/campgrounds')
+    })
   }),
   signinPage: (req, res) => {
     res.render('users/signin')

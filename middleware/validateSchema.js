@@ -17,7 +17,21 @@ const reviewSchema = Joi.object({
   }).required()
 })
 
+const signupSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  password: Joi.string().required(),
+  confirmPassword: Joi.string().required()
+})
+
+const signinSchema = Joi.object({
+  email: Joi.string().required(),
+  password: Joi.string().required(),
+})
+
 module.exports = {
   campgroundSchema,
-  reviewSchema
+  reviewSchema,
+  signupSchema,
+  signinSchema
 }

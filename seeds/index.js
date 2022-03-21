@@ -24,7 +24,8 @@ const seedDB = async () => {
       title: `${sample(descriptors)} ${sample(places)}`,
       image: `https://loremflickr.com/320/240/camp,landscape/?random=${Math.random() * 100}`,
       description: faker.lorem.text(),
-      price
+      price,
+      author: "6235b2b80b59d13789039231"
     })
     await camp.save()
   }

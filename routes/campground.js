@@ -5,6 +5,7 @@ const campgroundController = require('../controllers/campgroundController')
 const reviewController = require('../controllers/reviewController')
 const validateCampground = require('../middleware/validateCampground')
 const validateReview = require('../middleware/validateReview')
+const isCampExistAndAuthor = require('../middleware/isExistAndAuthor')
 
 // all campgrounds
 router.get('/', campgroundController.getCampgrounds)
@@ -17,11 +18,11 @@ router.post('/', validateCampground, campgroundController.postCampground)
 router.get('/:id', campgroundController.getCampground)
 
 // update a campground
-router.get('/:id/edit', campgroundController.getUpdateCampgroundPage)
-router.put('/:id', validateCampground, campgroundController.updateCampground)
+router.get('/:id/edit', isCampExistAndAuthor, campgroundController.getUpdateCampgroundPage)
+router.put('/:id', validateCampground, isCampExistAndAuthor, campgroundController.updateCampground)
 
 // delete a campground
-router.delete('/:id', campgroundController.deleteCampground)
+router.delete('/:id', isCampExistAndAuthor, campgroundController.deleteCampground)
 
 // add a review
 router.post('/:id/reviews', validateReview, reviewController.postReview)

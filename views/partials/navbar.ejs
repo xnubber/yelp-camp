@@ -12,14 +12,14 @@
         <a class="nav-link" href="/campgrounds/new">New Campground</a>
       </div>
     </div>
-    <% if (user) { %>
-    <span class="text-white nav-link">Hi, <%= user.username %></span>
-    <% } %>
-    <% if (isAuthenticated) { %>
-      <a href="/users/logout" class="btn btn-primary">Logout</a>
-    <% } else { %>
-      <a href="/users/signup" class="text-white nav-link">Sign Up</a>
-      <a href="/users/signin" class="text-white nav-link">Sign In</a>
-    <% } %>
+      <% if (user) { %>
+        <span class="text-white nav-link">Hi, <%= user.username %></span>
+      <% } %>
+      <% if (isAuthenticated) { %>
+        <a href="/users/logout" class="btn btn-primary" style="right: 0px;">Logout</a>
+      <% } else { %>
+        <a href="/users/signup" class="text-white nav-link">Sign Up</a>
+        <a href="/users/signin" class="text-white nav-link">Sign In</a>
+      <% } %>
   </div>
 </nav>

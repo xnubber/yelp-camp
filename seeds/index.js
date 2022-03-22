@@ -22,7 +22,16 @@ const seedDB = async () => {
     const camp = new Campground({
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
-      image: `https://loremflickr.com/320/240/camp,landscape/?random=${Math.random() * 100}`,
+      image: [
+        {
+          url: `https://loremflickr.com/320/240/camp,landscape/?random=${Math.random() * 100}`,
+          filename: 'yelp-camp-img-1'
+        },
+        {
+          url: `https://loremflickr.com/320/240/camp,landscape/?random=${Math.random() * 100}`,
+          filename: 'yelp-camp-img-2'
+        },
+      ],
       description: faker.lorem.text(),
       price,
       author: "6235b2b80b59d13789039231"

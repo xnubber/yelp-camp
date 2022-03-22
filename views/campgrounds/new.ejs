@@ -2,7 +2,7 @@
   <div class="row">
     <h1 class="text-center">New Campground</h1>
     <div class="col-6 offset-3">
-      <form action="/campgrounds" method="POST" novalidate class="needs-validation">
+      <form action="/campgrounds" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
         <div class="mb-3">
           <label class="form-label" for="title">Title</label>
           <input class="form-control" type="text" id="title" name="campground[title]" required>
@@ -24,20 +24,18 @@
           </div>
         </div>
         <div class="mb-3">
-          <label class="form-label" for="image">Image</label>
-          <input class="form-control" type="text" id="image" name="campground[image]" required>
-          <div class="valid-feedback">
-            Looks good!
-          </div>
-          <div class="invalid-feedback">
-            Please choose a campground image.
+          <label for="" class="mb-2">Image(s)</label>
+          <div class="input-group custom-file">
+            <input type="file" class="form-control" id="inputGroupFile" name="image" multiple>
           </div>
         </div>
+
         <div class="mb-3">
           <label class="form-label" for="price">Campground Price</label>
           <div class="input-group">
             <span class="input-group-text" id="price-label">$</span>
-            <input class="form-control" type="number" name="campground[price]" id="price" placeholder="0.0" min="0" required>
+            <input class="form-control" type="number" name="campground[price]" id="price" placeholder="0.0" min="0"
+              required>
             <div class="valid-feedback">
               Looks good!
             </div>
@@ -48,7 +46,8 @@
         </div>
         <div class="mb-3">
           <label class="form-label" for="description">Description</label>
-          <textarea class="form-control" type="text" id="description" name="campground[description]" required></textarea>
+          <textarea class="form-control" type="text" id="description" name="campground[description]"
+            required></textarea>
           <div class="valid-feedback">
             Looks good!
           </div>
@@ -63,5 +62,3 @@
       <a href="/campgrounds">All Campgrounds</a>
     </div>
   </div>
-
-  

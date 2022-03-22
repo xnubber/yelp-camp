@@ -1,6 +1,7 @@
 const Campground = require('../models/campground')
 const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
+const { cloudinary } = require('../config/cloudinary')
 
 const campgroundController = {
   getCampgrounds: catchAsync(async (req, res) => {
@@ -12,6 +13,7 @@ const campgroundController = {
   },
   postCampground: catchAsync(async (req, res) => {
     const campground = new Campground(req.body.campground)
+    campground.image = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id
     await campground.save()
     req.flash('success', 'Successfully created a new campground')
@@ -24,7 +26,7 @@ const campgroundController = {
         path: 'author'
       }
     }).populate('author')
-    if(!campground) throw new ExpressError("Campground didn't exist", 500)
+    if (!campground) throw new ExpressError("Campground didn't exist", 500)
     res.render('campgrounds/show', { campground })
   }),
   getUpdateCampgroundPage: catchAsync(async (req, res) => {
@@ -34,8 +36,20 @@ const campgroundController = {
   }),
   updateCampground: catchAsync(async (req, res) => {
     const { id } = req.params
-    const campground = await Campground.findById(id)
-    await Campground.findByIdAndUpdate(id, { ...req.body.campground })
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
+    const images = req.files.map(f => ({ url: f.path, filename: f.filename }))
+    campground.image.push(...images)
+    await campground.save()
+    if (req.body.deleteImages) {
+      if (campground.image.length === req.body.deleteImages.length) {
+        req.flash('error', "You can't delete all images")
+        return res.redirect(`/campgrounds/${campground._id}`)
+      }
+      for (let filename of req.body.deleteImages) {
+        await cloudinary.uploader.destroy(filename)
+      }
+      await campground.updateOne({ $pull: { image: { filename: { $in: req.body.deleteImages } } } })
+    }
     req.flash('success', 'Successfully updated a campground')
     res.redirect(`/campgrounds/${campground._id}`)
   }),

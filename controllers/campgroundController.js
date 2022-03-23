@@ -3,13 +3,22 @@ const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
 const { cloudinary } = require('../config/cloudinary')
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
+const { getOffset, getPagination } = require('../utils/pagination')
 const mapBoxToken = process.env.MAPBOX_TOKEN
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken })
 
 const campgroundController = {
   getCampgrounds: catchAsync(async (req, res) => {
-    const campgrounds = await Campground.find({})
-    res.render('campgrounds/index', { campgrounds })
+    const DEFAULT_LIMIT = 9
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+    const campgrounds = await Campground.find({}).limit(limit).skip(offset)
+    console.log(offset)
+    res.render('campgrounds/index', { 
+      campgrounds,
+      pagination: getPagination(limit, page, 50)
+    })
   }),
   getNewCampgroundPage: (req, res) => {
     res.render('campgrounds/new')

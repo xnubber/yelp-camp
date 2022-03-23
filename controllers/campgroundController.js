@@ -14,10 +14,10 @@ const campgroundController = {
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
     const campgrounds = await Campground.find({}).limit(limit).skip(offset)
-    console.log(offset)
+    const campgroundCount = await Campground.countDocuments()
     res.render('campgrounds/index', { 
       campgrounds,
-      pagination: getPagination(limit, page, 50)
+      pagination: getPagination(limit, page, campgroundCount)
     })
   }),
   getNewCampgroundPage: (req, res) => {

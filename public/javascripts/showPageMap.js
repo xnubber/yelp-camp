@@ -15,6 +15,10 @@ function rotateCamera(timestamp) {
   requestAnimationFrame(rotateCamera);
 }
 
+const nav = new mapboxgl.NavigationControl({
+  visualizePitch: true
+})
+
 map.on('load', () => {
   // Start the animation.
   rotateCamera(0);

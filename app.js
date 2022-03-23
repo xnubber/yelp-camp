@@ -8,6 +8,7 @@ const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const session = require('express-session')
 const flash = require('connect-flash')
+const mongoSanitize = require('express-mongo-sanitize')
 const port = 3000
 
 const passport = require('./config/passport')
@@ -41,6 +42,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use(mongoSanitize())
 app.use((req,res,next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.user = req.user
